@@ -4,7 +4,7 @@ if (!require(dplyr))
   install.packages("dplyr", repos = "http://cran.us.r-project.org")
 
 
-source('settings.R')
+source('Settings.R')
 
 
 # First, need to fetch list of Members of Parliament (MPs), filtered for MPs at
