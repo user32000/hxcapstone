@@ -4,7 +4,7 @@ if (!require(dplyr))
   install.packages("dplyr", repos = "http://cran.us.r-project.org")
 
 
-source('settings.R')
+source('Settings.R')
 
 
 # First, need to fetch list of Members of Parliament (MPs), filtered for MPs at
@@ -49,7 +49,8 @@ PeriodsAPI <- c(
 )
 Periods <- getJSON(PeriodsAPI['name'],
                    PeriodsAPI['url'],
-                   path = folderJSON)
+                   path = folderJSON,
+                   silent=FALSE)
 save(Periods, file = paste0(folderRData, 'Periods-RAW.RData'))
 
 previousBundestagID <- Periods[Periods$type == 'legislature', ] %>% slice(2) %>% pull('id')
@@ -67,7 +68,9 @@ MPsAPI <- c(
 )
 MPs <- getJSON(MPsAPI['name'],
                MPsAPI['url'],
-               path = folderJSON)
+               path = folderJSON,
+               pageParameter = '&page=',
+               silent=FALSE)
 save(MPs, file = paste0(folderRData, 'MPs-RAW.RData'))
 
 
@@ -80,7 +83,8 @@ MPhistory <- sapply(MPs$id, function(id) {
   unlist(getJSON(
     paste0(id, '-', MPhistoryAPI['name']),
     paste0(MPhistoryAPI['url'], id),
-    path = folderJSON
+    path = folderJSON,
+    silent=FALSE
   ))
 }, simplify = FALSE) %>% bind_rows()
 save(MPhistory, file = paste0(folderRData, 'mphistory-RAW.RData'))
@@ -96,7 +100,8 @@ politicians <- sapply(as.list(MPs$politician[['id']]), function(id) {
   unlist(getJSON(
     paste0(id, '-', politiciansAPI['name']),
     paste0(politiciansAPI['url'], id),
-    path = folderJSON
+    path = folderJSON,
+    silent=FALSE
   ))
 }, simplify = FALSE) %>% bind_rows()
 save(politicians, file = paste0(folderRData, 'politicians-RAW.RData'))
@@ -118,7 +123,8 @@ partiesAPI <- c(name = 'parties.JSON',
                 url = 'https://www.abgeordnetenwatch.de/api/v2/parties')
 parties <- getJSON(partiesAPI['name'],
                    partiesAPI['url'],
-                   path = folderJSON)
+                   path = folderJSON,
+                   silent=FALSE)
 save(parties, file = paste0(folderRData, 'parties-RAW.RData'))
 
 
@@ -134,7 +140,8 @@ fractionsAPI <- c(
 )
 fractions <- getJSON(fractionsAPI['name'],
                      fractionsAPI['url'],
-                     path = folderJSON)
+                     path = folderJSON,
+                     silent=FALSE)
 save(fractions, file = paste0(folderRData, 'fractions-RAW.RData'))
 
 
@@ -149,7 +156,9 @@ committeeAPI <- c(
   )
 )
 committees <- getJSON(committeeAPI['name'],
-                      committeeAPI['url'], path = folderJSON)
+                      committeeAPI['url'],
+                      path = folderJSON,
+                      silent=FALSE)
 save(committees, file = paste0(folderRData, 'committees-RAW.RData'))
 
 committeeMembershipsAPI <- c(name = 'committeeMemberships.JSON',
@@ -158,7 +167,8 @@ committeeMemberships <- sapply(committees$id, function(id) {
   getJSON(
     paste0(id, '-', committeeMembershipsAPI['name']),
     paste0(committeeMembershipsAPI['url'], '?committee=', id),
-    path = folderJSON
+    path = folderJSON,
+    silent=FALSE
   )
 }, simplify = FALSE) %>% bind_rows()
 save(committeeMemberships,
@@ -175,7 +185,10 @@ motionsAPI <- c(
     previousBundestagID
   )
 )
-motions <- getJSON(motionsAPI['name'], motionsAPI['url'], path = folderJSON)
+motions <- getJSON(motionsAPI['name'],
+                   motionsAPI['url'],
+                   path = folderJSON,
+                   silent=FALSE)
 save(motions, file = paste0(folderRData, Sys.Date(), '-motions-RAW.RData'))
 
 
@@ -184,7 +197,10 @@ save(motions, file = paste0(folderRData, Sys.Date(), '-motions-RAW.RData'))
 print('... and topics\n')
 topicsAPI <- c(name = 'topics.JSON',
                url = 'https://www.abgeordnetenwatch.de/api/v2/topics')
-topics <- getJSON(topicsAPI['name'], topicsAPI['url'], path = folderJSON)
+topics <- getJSON(topicsAPI['name'],
+                  topicsAPI['url'],
+                  path = folderJSON,
+                  silent=FALSE)
 save(topics, file = paste0(folderRData, 'topics-RAW.RData'))
 
 
@@ -200,8 +216,10 @@ votesAPI <-
   c(name = 'votes.JSON', url = 'https://www.abgeordnetenwatch.de/api/v2/votes')
 votes <- sapply(motions$id, function(id) {
   getJSON(paste0(id, '-', votesAPI['name']),
-          paste0(votesAPI['url'], '?poll=', id),
-          path = folderJSON)
+          paste0(votesAPI['url'], '?poll=', id),,
+          pageParameter = '&page=',
+          path = folderJSON,
+          silent=FALSE)
 }, simplify = FALSE) %>% bind_rows()
 save(votes, file = paste0(folderRData, 'votes-RAW.RData'))
 

@@ -32,7 +32,6 @@ MPs <- MPs %>%
 MPs <- MPs %>% 
   unpack('fraction_membership.fraction', names_sep = ".")
 MPs$start_date <- as.Date(MPs$start_date)
-MPs$end_date <- as.Date(MPs$end_date)
 MPs <- MPs %>% 
   mutate_if((str_detect(names(.), "id$")), as.numeric)
 save(MPs, file = paste0(folderRData, 'MPs.RData'))
@@ -47,18 +46,15 @@ skMPs <- MPs %>% select(
   electoral_data.constituency.id,
   fraction_membership.id,
   fraction_membership.fraction.id,
-  start_date,
-  end_date
-)
+  start_date)
 save(skMPs, file = paste0(folderRData, 'skMPs.RData'))
 rm(list = c('MPs', 'skMPs'))
 
-load(file = paste0(folderRData, 'MPhistory-RAW.RData'))
+load(file = paste0(folderRData, 'mphistory-RAW.RData'))
 MPhistory$start_date <- as.Date(MPhistory$start_date)
-MPhistory$end_date <- as.Date(MPhistory$end_date)
 MPhistory <- MPhistory %>% 
   mutate_if((str_detect(names(.), "id$")), as.numeric)
-save(MPhistory, file = paste0(folderRData, 'MPhistory.RData'))
+save(MPhistory, file = paste0(folderRData, 'mphistory.RData'))
 
 skMPhistory <- MPhistory %>% 
   select(
