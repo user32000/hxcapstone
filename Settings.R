@@ -21,12 +21,13 @@ createFolderIfNeeded(folderFilters)
 createFolderIfNeeded(folderTemp)
 
 
-# Set this to the date of the API downlaod to use in the analysis
+# Set this to manually override the date of the API download to use in the 
+# analysis
+# strDate <- '2022-08-25'
 
-strDate <- '2022-08-25'
-
+strDate <- get0('strDate', ifnotfound = NA)
 if (is.na(strDate)) {
-  strDate <- Sys.Date()
+  load(file = paste0(folderRData, 'MostRecentAPIDownload.RData'))
 }
 
 

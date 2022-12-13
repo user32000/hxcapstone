@@ -142,7 +142,7 @@ save(skCommitteeMemberships, file = paste0(folderRData,
 # date, on the assumption that this script is run immediately following
 # 01 GetData.R
 
-load(file = paste0(folderRData, Sys.Date(), '-motions-RAW.RData'))
+load(file = paste0(folderRData, strDate, '-motions-RAW.RData'))
 motions <- motions %>% 
   unnest('field_committees', names_sep = '.', keep_empty = TRUE)
 motions <- motions %>% 
@@ -201,3 +201,4 @@ Periods <- Periods %>%
   mutate_if((str_detect(names(.), "id$")), as.numeric)
 save(Periods, file = paste0(folderRData, 'Periods.RData'))
 rm(list = c('Periods'))
+

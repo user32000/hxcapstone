@@ -249,4 +249,8 @@ if (!file.exists(paste0(folderTemp, '20170228_BTW17_WKr_Gemeinden_ASCII.csv'))) 
   unlink(temp)
 }
 
+strDate <- format(Sys.Date(), "%Y-%m-%d")
+save(strMostRecentAPIDownload,
+     file = paste0(folderRData, 'MostRecentAPIDownload.RData'))
+
 print('\nDone.\n\n')
