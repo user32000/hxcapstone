@@ -25,7 +25,6 @@ source('Definitions.R')
 source('Settings.R')
 source('FindAuthor.R')
 source('VotePie.R')
-source('Timeline.R')
 
 # We store data points that will be needed in the report in this dict so that
 # we don't have to replicate calculations in the report file

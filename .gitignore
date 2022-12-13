@@ -1,4 +1,8 @@
 .Rproj.user
 .Rhistory
 .RData
+JSON_files/
+temp/
+filters/
+RData_files/
 .Ruserdata
