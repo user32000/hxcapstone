@@ -27,7 +27,13 @@ createFolderIfNeeded(folderTemp)
 
 strDate <- get0('strDate', ifnotfound = NA)
 if (is.na(strDate)) {
-  load(file = paste0(folderRData, 'MostRecentAPIDownload.RData'))
+  fn <- paste0(folderRData, 'MostRecentAPIDownload.RData')
+  if(file.exists(fn)) {
+    load(file = fn)
+  } else {
+    strDate <- format(Sys.Date(), "%Y-%m-%d")
+  }
+  
 }
 
 

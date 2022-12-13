@@ -1,11 +1,7 @@
-if(!require(tidyverse))
-  install.packages("tidyverse")
-if (!require(dplyr))
-  install.packages("dplyr")
-if (!require(rvest))
-  install.packages("rvest")
-if (!require(fuzzyjoin))
-  install.packages("fuzzyjoin")
+if (!require(tidyverse)) { install.packages("tidyverse") }
+if (!require(dplyr)) { install.packages("dplyr") }
+if (!require(rvest)) { install.packages("rvest") }
+if (!require(fuzzyjoin)) { install.packages("fuzzyjoin") }
 
 
 source('Settings.R')
@@ -143,6 +139,8 @@ save(skCommitteeMemberships, file = paste0(folderRData,
 # 01 GetData.R
 
 load(file = paste0(folderRData, strDate, '-motions-RAW.RData'))
+isEmptyList <- sapply(motions$field_committees, function(x) { length(x) == 0})
+motions[isEmptyList, 'field_committees'] <- NA
 motions <- motions %>% 
   unnest('field_committees', names_sep = '.', keep_empty = TRUE)
 motions <- motions %>% 
@@ -202,3 +200,4 @@ Periods <- Periods %>%
 save(Periods, file = paste0(folderRData, 'Periods.RData'))
 rm(list = c('Periods'))
 
+print('Done.')

@@ -1,8 +1,6 @@
-if(!require(tidyverse))
-  install.packages("tidyverse")
+if(!require(tidyverse)) { install.packages("tidyverse") }
 
 source('Settings.R')
-
 
 
 if (!file.exists(paste0(folderFilters, 'columns.lua'))) {
