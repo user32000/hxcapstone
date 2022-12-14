@@ -195,7 +195,7 @@ doTestMethod <- function(df,
       }
     )
     
-    if (!is.na(m)) {
+    if (length(m) > 1) {
       pY <- predict(m, newdata = dfX[-ix, ])
       
       rP <- precision(pY, dfY[-ix])

@@ -432,8 +432,8 @@ if (!file.exists(fName) | get0('forceRecalc', ifnotfound = FALSE)) {
 
 
 # We now stop the (implicitly created) local multi-processor cluster
-
 stopImplicitCluster()
 
 
 # ... and we are done!
+print('Done.\n\n')
