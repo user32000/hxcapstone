@@ -75,14 +75,25 @@ rm(list = c('MPhistory', 'skMPhistory'))
 load(file = paste0(folderRData, 'politicians-RAW.RData'))
 politicians <- politicians %>% 
   mutate_if((str_detect(names(.), "id$")), as.numeric)
+politicians[is.na(politicians$sex), 'sex'] <- 'n'
+politicians$sex <- as.factor(politicians$sex)
 politicians$year_of_birth <- as.numeric(politicians$year_of_birth)
+politicians$age <- ifelse(is.na(politicians$year_of_birth), 0, 
+                          year(today()) - politicians$year_of_birth)
+politicians <- politicians %>% select(-year_of_birth)
 politicians$statistic_questions <- as.numeric(politicians$statistic_questions)
 politicians$statistic_questions_answered <- 
   as.numeric(politicians$statistic_questions_answered)
+politicians <- politicians %>% mutate(answeredShare = case_when(
+  is.na(statistic_questions) & is.na(statistic_questions_answered) ~ 0.0,
+  is.na(statistic_questions) ~ 1.0,
+  is.na(statistic_questions_answered) ~ 0.0,
+  TRUE ~ statistic_questions_answered / statistic_questions)) %>%
+  select(-statistic_questions,-statistic_questions_answered)
 save(politicians, file = paste0(folderRData, 'politicians.RData'))
 
 skPoliticians <- politicians %>% 
-  select(id, label, sex, year_of_birth, education, party.id, party.label)
+  select(id, label, sex, education, party.id, party.label)
 save(skPoliticians, file = paste0(folderRData, 'skPoliticians.RData'))
 rm(list = c('politicians', 'skPoliticians'))
 
@@ -200,4 +211,4 @@ Periods <- Periods %>%
 save(Periods, file = paste0(folderRData, 'Periods.RData'))
 rm(list = c('Periods'))
 
-print('Done.')
+print('\nDone.\n\n')

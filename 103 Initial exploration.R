@@ -1,29 +1,17 @@
-if(!require(jsonlite))
-  install.packages("jsonlite")
-if (!require(lubridate))
-  install.packages("lubridate")
-if (!require(dplyr))
-  install.packages("dplyr")
-if (!require(purrr))
-  install.packages("purrr")
-if (!require(assertr))
-  install.packages("assertr")
-if (!require(tidyverse))
-  install.packages("tidyverse")
-if (!require(sf))
-  install.packages("sf")
-if (!require(ggplot2))
-  install.packages("ggplot2")
-if (!require(ggthemes))
-  install.packages("ggthemes")
-if (!require(scales))
-  install.packages("scales")
-if (!require(gridExtra))
-  install.packages("gridExtra")
+if(!require(jsonlite)) { install.packages("jsonlite") }
+if (!require(lubridate)) { install.packages("lubridate") }
+if (!require(dplyr)) { install.packages("dplyr") }
+if (!require(purrr)) { install.packages("purrr") }
+if (!require(assertr)) { install.packages("assertr") }
+if (!require(tidyverse)) { install.packages("tidyverse") }
+if (!require(sf)) { install.packages("sf") }
+if (!require(ggplot2)) { install.packages("ggplot2") }
+if (!require(ggthemes)) { install.packages("ggthemes") }
+if (!require(scales)) { install.packages("scales") }
+if (!require(gridExtra)) { install.packages("gridExtra") }
 
 source('Definitions.R')
 source('Settings.R')
-source('FindAuthor.R')
 source('VotePie.R')
 
 # We store data points that will be needed in the report in this dict so that
@@ -110,9 +98,8 @@ nsMPs <- nsMPs %>%
       'politician.label',
       'occupation',
       'party.label',
-      'start_date',
-      'end_date'
-    )
+      'start_date'
+      )
   )
 nsMPs %>%
   ungroup() %>%
@@ -123,7 +110,7 @@ nsMPs %>%
 # FINDINGS So we should filter out MPs who are no longer active
 # As it turns out, that doesn't drop the share of no-show votes by much
 inactiveMPs <- MPs %>%
-  filter(!is.na(end_date)) %>%
+  filter(is.na(politician.label)) %>%
   select('id')
 
 activeMPs <- anti_join(MPs, inactiveMPs, by = c('id' = 'id'))

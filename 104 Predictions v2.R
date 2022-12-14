@@ -1,11 +1,9 @@
-if(!require(dplyr))
-  install.packages("dplyr")
-if (!require(tidyverse))
-  install.packages("tidyverse")
-if (!require(caret))
+if(!require(dplyr)) { install.packages("dplyr") }
+if (!require(tidyverse)) { install.packages("tidyverse") }
+if (!require(caret)) {
   install.packages("caret", dependencies = c("Depends", "Suggests"))
-if (!require(doParallel))
-  install.packages("doParallel")
+  }
+if (!require(doParallel)) { install.packages("doParallel") }
 
 source('Definitions.R')
 source('Settings.R')

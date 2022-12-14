@@ -1,5 +1,4 @@
-if(!require(stringdist))
-  install.packages('stringdist')
+if(!require(stringdist)) { install.packages('stringdist') }
 
 source('SupportFunctions.R')
 

@@ -1,7 +1,7 @@
-if (!require(plyr))
-  install.packages("plyr")
-if (!require(jsonlite))
+if (!require(plyr)) { install.packages("plyr") }
+if (!require(jsonlite)) {
   install.packages("jsonlite", repos = "http://cran.us.r-project.org")
+  }
 
 
 getJSON <- function(name,
