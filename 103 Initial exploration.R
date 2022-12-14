@@ -107,13 +107,16 @@ nsMPs %>%
   arrange(desc(missedVotes)) %>%
   head()
 
-# FINDINGS So we should filter out MPs who are no longer active
+# FINDINGS So we should filter out votes from MPs who are no longer active
 # As it turns out, that doesn't drop the share of no-show votes by much
-inactiveMPs <- MPs %>%
+inactiveMPs <- nsMPs %>%
   filter(is.na(politician.label)) %>%
-  select('id')
+  select('mandate.id')
 
-activeMPs <- anti_join(MPs, inactiveMPs, by = c('id' = 'id'))
+# MPs already only shows those who are active - a recent change in the
+# abgeordnetenwatch API
+activeMPs <- MPs
+
 activeVotes <- activeMPs %>% left_join(votes, by = c('id' = 'mandate.id'))
 gPie <- plotPie(activeVotes, inner = 'vote', coloursInner = colVotes) +
   ggtitle("Voting behaviour") +
@@ -121,6 +124,7 @@ gPie <- plotPie(activeVotes, inner = 'vote', coloursInner = colVotes) +
     panel.background = element_rect(fill = "transparent", colour = NA),
     plot.background = element_rect(fill = "transparent", colour = NA)
   )
+gPie
 ggsave(
   plot = gPie,
   width = 7,
@@ -133,18 +137,18 @@ ggsave(
 
 dictKeyStats['ShareNoShowActive'] = sum(activeVotes$vote == 'no_show')/nrow(activeVotes)
 
-activeMPs <- anti_join(votes, inactiveMPs, by = c('mandate.id' = 'id')) %>%
+activeMPVoteShare <- activeMPs %>% left_join(votes, by = c('id' = 'mandate.id')) %>%
   filter(vote == 'no_show') %>%
-  group_by(mandate.id) %>%
+  group_by(id) %>%
   dplyr::summarize(count = n(), .groups = 'keep')
-activeMPs <- activeMPs %>%
+activeMPVoteShare <- activeMPVoteShare %>%
   mutate(missedVotes = count / nrow(motions))
 
 activeMPs <- activeMPs %>%
-  left_join(MPs, by = c('mandate.id' = 'id')) %>%
+  left_join(activeMPVoteShare, by = c('id' = 'id')) %>%
   left_join(politicians, by = c('politician.id' = 'id')) %>%
   select(c(
-    'mandate.id',
+    'id',
     'missedVotes',
     'politician.label',
     'occupation',
@@ -152,7 +156,7 @@ activeMPs <- activeMPs %>%
   ))
 topNSMPs <- activeMPs %>%
   ungroup() %>%
-  select(-c('mandate.id')) %>%
+  select(-c('id')) %>%
   arrange(desc(missedVotes)) %>%
   head()
 topNSMPs
@@ -179,11 +183,10 @@ ggsave(
   filename = 'Frequency of no-show votes by MP.jpg'
 )
 
-# FINDINGS OK so now the top 'no shows' are headed (appropriately?) by the Head
-# of Government, Chancellor Angela Merkel.  #2 on the list is Dr. Helge Braun
-# which a quick Google search identifies as Head of the Chancellery and Federal
-# Minister for Special Affairs.  Fifth is Peter Altmeier, Federal Minister for
-# Economic Affairs and Energy.
+# FINDINGS OK so now the top 'no shows' include (appropriately?) the Head of
+# Government, Chancellor Angela Merkel, Dr. Helge Braun which a quick Google
+# search identifies as Head of the Chancellery and Federal Minister for Special
+# Affairs, and Peter Altmeier, Federal Minister for Economic Affairs and Energy.
 
 # Let's focus on those MPs that have a share >= 5% as frequent no-shows
 # QUESTION Who are these MPs?
@@ -220,7 +223,7 @@ nsMPs <- nsMPs %>% left_join(MPs[c(
   'electoral_data.constituency_result',
   'fraction_membership.fraction.id'
 )],
-by = c('mandate.id' = 'id')) %>%
+by = c('id' = 'id')) %>%
   left_join(politicians[c('id',
                           'sex',
                           'age',
@@ -303,7 +306,7 @@ activeMPData <- activeMPs %>% left_join(MPs[c(
   'electoral_data.constituency_result',
   'fraction_membership.fraction.id'
 )],
-by = c('mandate.id' = 'id')) %>%
+by = c('id' = 'id')) %>%
   left_join(politicians[c('id',
                           'sex',
                           'age',
@@ -396,7 +399,7 @@ ggsave(
 tNSMPsBySex <- activeMPData %>%
   filter(sex != 'n') %>%
   group_by(sex, isNS) %>%
-  summarise(n = n()) %>%
+  dplyr::summarise(n = n()) %>%
   group_by(sex) %>%
   mutate(s = n / sum(n)) %>%
   select(-n)
@@ -418,11 +421,11 @@ for (i in seq(1, nrow(tNSMPsBySex))) {
 # QUESTION Let's identify those polls that have the highest share of no-shows
 
 skActiveVotes <- activeVotes %>%
-  select(c('id', 'mandate.id', 'poll.id', 'vote'))
+  select(c('id', 'poll.id', 'vote'))
 
 nsVotes <- skActiveVotes %>%
   group_by(poll.id, vote) %>%
-  summarise(n = n()) %>%
+  dplyr::summarise(n = n()) %>%
   ungroup() %>%
   group_by(poll.id) %>%
   mutate(N = sum(n),
@@ -432,7 +435,7 @@ nsVotes <- skActiveVotes %>%
 
 gNSVoteFreq <- nsVotes %>%
   ggplot(aes(x = s)) +
-  geom_freqpoly(binwidth = 0.01) +
+  geom_freqpoly(binwidth = 0.0002) +
   theme(
     panel.background = element_rect(fill = "transparent", colour = NA),
     plot.background = element_rect(fill = "transparent", colour = NA)
@@ -479,21 +482,20 @@ pollsData$tShortName <- lTopicsShortNames[pollsData$field_topics.label]
 
 nCPollsData <- pollsData %>%
   group_by(cShortName) %>%
-  summarise(nC = n())
+  dplyr::summarise(nC = n())
 nTPollsData <- pollsData %>%
   group_by(tShortName) %>%
-  summarise(nT = n())
+  dplyr::summarise(nT = n())
 nDPollsData <- pollsData %>%
   select(c('id', 'weekday')) %>%
   unique() %>%
   group_by(weekday) %>%
-  summarise(nD = n())
+  dplyr::summarise(nD = n())
 
 votesData <- activeVotes %>%
   left_join(pollsData, by = c('poll.id' = 'id')) %>%
   select(c(
     'id',
-    'mandate.id',
     'poll.id',
     'weekday',
     'cShortName',
@@ -503,7 +505,7 @@ votesData <- activeVotes %>%
 
 nDVotesData <- votesData %>%
   group_by(weekday, vote) %>%
-  summarise(nNSVotes = n())
+  dplyr::summarise(nNSVotes = n())
 
 nDVotesData <- nDVotesData %>%
   group_by(weekday) %>%
@@ -560,7 +562,7 @@ ggsave(
 
 nCVotesData <- votesData %>%
   group_by(cShortName, vote) %>%
-  summarise(nNSVotes = n())
+  dplyr::summarise(nNSVotes = n())
 
 nCVotesData <- nCVotesData %>%
   group_by(cShortName) %>%
@@ -622,7 +624,7 @@ gPollsCommittee <- pollsByCommittee %>%
 
 nTVotesData <- votesData %>%
   group_by(tShortName, vote) %>%
-  summarise(nNSVotes = n())
+  dplyr::summarise(nNSVotes = n())
 
 nTVotesData <- nTVotesData %>%
   group_by(tShortName) %>%
@@ -710,10 +712,9 @@ formattedPollsByTopic %>%
 
 percent(mean(pollsByTopic$sNSVotes), 0.1)
 
-# FINDINGS Interestingly, lobbyism / transparency and humanitarian aid have the
-# highest share of no-shows, whereas gender equality and affairs relating to the
-# 'new' federal states (i.e. the former East Germany) have the highest rate of
-# attendance
+# FINDINGS Interestingly, foreign affairs has the highest share of no-shows, 
+# whereas gender equality and affairs relating to the 'new' federal states 
+# (i.e. the former East Germany) have the highest rate of attendance
 
 # ############################################################################
 #

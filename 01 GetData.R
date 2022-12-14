@@ -234,7 +234,7 @@ if (!file.exists(paste0(folderTemp, 'Geometrie_Wahlkreise_19DBT_VG250.shp'))) {
     'https://www.bundeswahlleiter.de/dam/jcr/67e3e9b8-dbca-4bc9-8977-ac792665bbce/btw17_geometrie_wahlkreise_vg250_shp.zip',
     temp
   )
-  unzip(temp, files = 'Geometrie_Wahlkreise_19DBT_VG250.shp', exdir = folderTemp)
+  unzip(temp, exdir = folderTemp)
   unlink(temp)
 }
 

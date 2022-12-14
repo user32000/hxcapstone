@@ -161,6 +161,8 @@ motions <- motions %>%
 motions <- motions %>% 
   unnest('field_topics', names_sep = '.', keep_empty = TRUE)
 motions$field_poll_date <- as.Date(motions$field_poll_date)
+motions$weekday <-
+  as.factor(weekdays(motions$field_poll_date, abbreviate = FALSE))
 motions <- motions %>% 
   mutate_if((str_detect(names(.), "id$")), as.numeric)
 save(motions, file = paste0(folderRData, Sys.Date(), '-motions.RData'))
