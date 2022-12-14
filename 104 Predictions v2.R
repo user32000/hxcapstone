@@ -1,9 +1,16 @@
-if(!require(dplyr)) { install.packages("dplyr") }
-if (!require(tidyverse)) { install.packages("tidyverse") }
+if(!require(dplyr)) {
+  install.packages("dplyr")
+  library("dplyr") }
+if (!require(tidyverse)) {
+  install.packages("tidyverse")
+  library("tidyverse") }
 if (!require(caret)) {
-  install.packages("caret", dependencies = c("Depends", "Suggests"))
+  install.packages("caret")
+  library("caret") }
+if (!require(doParallel)) {
+  install.packages("doParallel")
+  library("doParallel")
   }
-if (!require(doParallel)) { install.packages("doParallel") }
 
 source('Definitions.R')
 source('Settings.R')
@@ -46,10 +53,13 @@ constituencies <- constituencies %>%
   select(c('id', 'Landname')) %>%
   unique()
 
-inactiveMPs <- MPs %>%
-  filter(!is.na(end_date)) %>%
-  select('id')
-activeMPs <- anti_join(MPs, inactiveMPs, by = c('id' = 'id'))
+inactiveMPs <- votes %>% 
+  left_join(MPs, by=c('mandate.id' = 'id')) %>% 
+  left_join(politicians, by=c('politician.id'='id')) %>% 
+  filter(is.na(label)) %>% 
+  select(c('mandate.id')) %>% 
+  unique()
+activeMPs <- MPs
 
 nsVotes <- activeMPs %>% left_join(votes, by = c('id' = 'mandate.id')) %>%
   filter(vote == 'no_show') %>%

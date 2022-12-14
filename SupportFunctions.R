@@ -174,7 +174,7 @@ doTestMethod <- function(df,
       repeats = 5,
       summaryFunction = twoClassSummary,
       classProbs = TRUE,
-      verboseIter = runVerbose,
+      verboseIter = TRUE,
       sampling = samplingMethodName,
       search = 'random',
       allowParallel = TRUE
