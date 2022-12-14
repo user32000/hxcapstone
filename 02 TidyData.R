@@ -165,7 +165,7 @@ motions$weekday <-
   as.factor(weekdays(motions$field_poll_date, abbreviate = FALSE))
 motions <- motions %>% 
   mutate_if((str_detect(names(.), "id$")), as.numeric)
-save(motions, file = paste0(folderRData, Sys.Date(), '-motions.RData'))
+save(motions, file = paste0(folderRData, strDate, '-motions.RData'))
 
 skMotions <- motions %>% 
   select(id,
@@ -174,7 +174,7 @@ skMotions <- motions %>%
          field_poll_date,
          field_topics.id) %>% 
   distinct()
-save(skMotions, file = paste0(folderRData, Sys.Date(), '-skMotions.RData'))
+save(skMotions, file = paste0(folderRData, strDate, '-skMotions.RData'))
 rm(list = c('motions', 'skMotions'))
 
 load(file = paste0(folderRData, 'topics-RAW.RData'))
