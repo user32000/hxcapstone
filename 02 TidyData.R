@@ -1,7 +1,19 @@
-if (!require(tidyverse)) { install.packages("tidyverse") }
-if (!require(dplyr)) { install.packages("dplyr") }
-if (!require(rvest)) { install.packages("rvest") }
-if (!require(fuzzyjoin)) { install.packages("fuzzyjoin") }
+if (!require(tidyverse)) {
+  install.packages("tidyverse")
+  library("tidyverse")
+}
+if (!require(dplyr)) {
+  install.packages("dplyr")
+  library("dplyr")
+}
+if (!require(rvest)) {
+  install.packages("rvest")
+  library("rvest")
+}
+if (!require(fuzzyjoin)) {
+  install.packages("fuzzyjoin")
+  library("fuzzyjoin")
+}
 
 
 source('Settings.R')

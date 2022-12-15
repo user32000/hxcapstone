@@ -1,6 +1,10 @@
-if (!require(plyr)) { install.packages("plyr") }
+if (!require(plyr)) { 
+  install.packages("plyr")
+  library("plyr")
+}
 if (!require(jsonlite)) {
   install.packages("jsonlite", repos = "http://cran.us.r-project.org")
+  library("jsonlite")
   }
 
 

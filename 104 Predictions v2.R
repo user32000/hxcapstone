@@ -1,16 +1,19 @@
 if(!require(dplyr)) {
   install.packages("dplyr")
-  library("dplyr") }
+  library("dplyr")
+}
 if (!require(tidyverse)) {
   install.packages("tidyverse")
-  library("tidyverse") }
+  library("tidyverse")
+}
 if (!require(caret)) {
   install.packages("caret")
-  library("caret") }
+  library("caret")
+}
 if (!require(doParallel)) {
   install.packages("doParallel")
   library("doParallel")
-  }
+}
 
 source('Definitions.R')
 source('Settings.R')
@@ -397,7 +400,8 @@ activeVotesOneHot <- makeOneHot(dfTemp, XColsVotesOneHot)
 
 fName <- paste0(folderTemp, 'lResultsVotesEnhanced.RData')
 if (!file.exists(fName) | get0('forceRecalc', ifnotfound = FALSE)) {
-  lResultsVotesEnhanced <- sapply(lMethodSpecs2, function(x) {
+  lResultsVotesEnhanced <- sapply(lMethodSpecs2[1], function(x) {
+    print(paste0('Running ', x$trainMethod, '(', x$sampleMethod, ')'))
     if (!is.na(x$extraParams)) {
       r <- doTestMethod(
         activeVotesOneHot,

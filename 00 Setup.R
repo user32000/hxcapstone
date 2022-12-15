@@ -1,4 +1,7 @@
-if(!require(tidyverse)) { install.packages("tidyverse") }
+if(!require(tidyverse)) {
+  install.packages("tidyverse")
+  library("tidyverse")
+  }
 
 source('Settings.R')
 

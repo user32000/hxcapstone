@@ -1,14 +1,47 @@
-if(!require(jsonlite)) { install.packages("jsonlite") }
-if (!require(lubridate)) { install.packages("lubridate") }
-if (!require(dplyr)) { install.packages("dplyr") }
-if (!require(purrr)) { install.packages("purrr") }
-if (!require(assertr)) { install.packages("assertr") }
-if (!require(tidyverse)) { install.packages("tidyverse") }
-if (!require(sf)) { install.packages("sf") }
-if (!require(ggplot2)) { install.packages("ggplot2") }
-if (!require(ggthemes)) { install.packages("ggthemes") }
-if (!require(scales)) { install.packages("scales") }
-if (!require(gridExtra)) { install.packages("gridExtra") }
+if(!require(jsonlite)) { 
+  install.packages("jsonlite")
+  library("jsonlite")
+}
+if (!require(lubridate)) {
+  install.packages("lubridate")
+  library("lubridate")
+}
+if (!require(dplyr)) { 
+  install.packages("dplyr")
+  library("dplyr")
+}
+if (!require(purrr)) { 
+  install.packages("purrr")
+  library("purrr")
+}
+if (!require(assertr)) {
+  install.packages("assertr")
+  library("assertr")
+}
+if (!require(tidyverse)) {
+  install.packages("tidyverse")
+  library("tidyverse")
+}
+if (!require(sf)) {
+  install.packages("sf")
+  library("sf")
+}
+if (!require(ggplot2)) {
+  install.packages("ggplot2")
+  library("ggplot2")
+}
+if (!require(ggthemes)) {
+  install.packages("ggthemes")
+  library("ggthemes")
+}
+if (!require(scales)) {
+  install.packages("scales")
+  library("scales")
+}
+if (!require(gridExtra)) {
+  install.packages("gridExtra")
+  library("gridExtra")
+}
 
 source('Definitions.R')
 source('Settings.R')

@@ -1,7 +1,13 @@
-if(!require(tidyverse))
+if(!require(tidyverse)) {
   install.packages("tidyverse", repos = "http://cran.us.r-project.org")
-if (!require(dplyr))
+  library("tidyverse")
+}
+  
+if (!require(dplyr)) {
   install.packages("dplyr", repos = "http://cran.us.r-project.org")
+  library("dplyr")
+}
+  
 
 
 source('Settings.R')
