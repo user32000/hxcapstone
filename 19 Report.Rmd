@@ -690,10 +690,10 @@ fName <- paste0(folderTemp, 'lConsolidatedResultsMPs.RData')
 load(fName)
 lConsolidatedResultsMPs['Precision',] <- 
   sapply(lConsolidatedResultsMPs['Precision',], function(x) 
-    { percent(x, accuracy=0.1) })
+    { ifelse(is.na(x), NA, percent(x, accuracy=0.1)) })
 lConsolidatedResultsMPs['Recall',] <- 
   sapply(lConsolidatedResultsMPs['Recall',], function(x) 
-    { percent(x, accuracy=0.1) })
+    { ifelse(is.na(x), NA, percent(x, accuracy=0.1)) })
 pander(lConsolidatedResultsMPs,
        keep.line.breaks = TRUE,
        style = 'grid',
@@ -724,10 +724,10 @@ panderOptions('table.split.table', Inf)
 load(file=paste0(folderTemp, 'lResultsVotes.RData'))
 lResultsVotes['Precision',] <- 
   sapply(lResultsVotes['Precision',], function(x) 
-    { percent(x, accuracy=0.1) })
+    { ifelse(is.na(x), NA, percent(x, accuracy=0.1)) })
 lResultsVotes['Recall',] <- 
   sapply(lResultsVotes['Recall',], function(x) 
-    { percent(x, accuracy=0.1) })
+    { ifelse(is.na(x), NA, percent(x, accuracy=0.1)) })
 pander(lResultsVotes,
 keep.line.breaks = TRUE,
        style = 'grid',
@@ -748,10 +748,10 @@ panderOptions('table.split.table', Inf)
 load(file=paste0(folderTemp, 'lResultsVotesEnhanced.RData'))
 lResultsVotesEnhanced['Precision',] <- 
   sapply(lResultsVotesEnhanced['Precision',], function(x) 
-    { percent(x, accuracy=0.1) })
+    { ifelse(is.na(x), NA, percent(x, accuracy=0.1)) })
 lResultsVotesEnhanced['Recall',] <- 
   sapply(lResultsVotesEnhanced['Recall',], function(x) 
-    { percent(x, accuracy=0.1) })
+    { ifelse(is.na(x), NA, percent(x, accuracy=0.1)) })
 pander(lResultsVotesEnhanced,
 keep.line.breaks = TRUE,
        style = 'grid',
