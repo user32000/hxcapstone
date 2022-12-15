@@ -13,16 +13,31 @@ header-includes:
 ---
 
 ```{r setup, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
-if(!require(tidyverse))
+if(!require(tidyverse)) {
   install.packages('tidyverse')
-if(!require(lubridate))
+  library('tidyverse')
+}
+  
+if(!require(lubridate)) {
   install.packages('lubridate')
-if (!require(pander))
+  library('lubridate')
+}
+  
+if (!require(pander)) {
   install.packages('pander')
-if (!require(scales))
-  install.packages(scales)
-if(!require(knitr))
+  library('pander')
+}
+  
+if (!require(scales)) {
+  install.packages('scales')
+  library('scales')
+}
+  
+if(!require(knitr)) {
   install.packages('knitr')
+  library('knitr')
+}
+  
 
 source('Settings.R')
 

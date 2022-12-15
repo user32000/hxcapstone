@@ -399,8 +399,8 @@ dfTemp <- activeVotes %>%
 activeVotesOneHot <- makeOneHot(dfTemp, XColsVotesOneHot)
 
 fName <- paste0(folderTemp, 'lResultsVotesEnhanced.RData')
-if (!file.exists(fName) | get0('forceRecalc', ifnotfound = FALSE)) {
-  lResultsVotesEnhanced <- sapply(lMethodSpecs2[1], function(x) {
+if (!file.exists(fName)) {
+  lResultsVotesEnhanced <- sapply(lMethodSpecs2, function(x) {
     print(paste0('Running ', x$trainMethod, '(', x$sampleMethod, ')'))
     if (!is.na(x$extraParams)) {
       r <- doTestMethod(
