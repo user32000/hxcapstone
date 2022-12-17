@@ -187,6 +187,8 @@ activeMPs <- activeMPs %>%
     'occupation',
     'party.label'
   ))
+activeMPs[is.na(activeMPs$missedVotes), 'missedVotes'] <- 0
+
 topNSMPs <- activeMPs %>%
   ungroup() %>%
   select(-c('id')) %>%
@@ -196,10 +198,11 @@ topNSMPs
 save(topNSMPs, file = paste0(folderTemp, 'List of top NS MPs.RData'))
 
 gNSHistogram <- activeMPs %>%
-  ggplot(aes(x = round(missedVotes * 100, 0))) +
+  ggplot(aes(x = missedVotes)) +
   geom_histogram(bins = 10) +
-  xlab('No-show votes') +
+  xlab('Share of no-shows') +
   ylab('# of MPs') +
+  scale_x_continuous(labels = percent) +
   ggtitle('Frequency of no-shows') +
   theme(
     panel.background = element_rect(fill = "transparent", colour = NA),
@@ -265,7 +268,7 @@ by = c('id' = 'id')) %>%
 
 gNSMPsParties <- nsMPs %>%
   plotPie(inner = 'party.label', coloursInner = colParties) +
-  ggtitle('No-show MPs by party affiliation') +
+  ggtitle('No-shows by party affiliation') +
   theme(
     panel.background = element_rect(fill = "transparent", colour = NA),
     plot.background = element_rect(fill = "transparent", colour = NA)
@@ -353,10 +356,14 @@ gNSMPsByListPosition <- activeMPData %>%
   ggplot(aes(y = electoral_data.list_position)) +
   geom_boxplot() +
   facet_grid(cols = vars(isNSText)) +
+  xlab('MP is a frequent no-show') +
+  ylab('Party list position') +
   ggtitle(label = element_blank(),
           subtitle = element_text('MPs elected via party lists')) +
   theme(
     legend.position = 'none',
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank(),
     panel.background = element_rect(fill = "transparent", colour = NA),
     plot.background = element_rect(fill = "transparent", colour = NA)
   )
@@ -366,10 +373,15 @@ gNSMPsByConstituencyResult <- activeMPData %>%
   ggplot(aes(y = electoral_data.constituency_result)) +
   geom_boxplot() +
   facet_grid(cols = vars(isNSText)) +
+  xlab('MP is a frequent no-show') +
+  ylab('MP constituency result') +
+  scale_y_continuous(labels = percent) +
   ggtitle(label = element_blank(),
           subtitle = element_text('MPs elected via constituencies')) +
   theme(
     legend.position = 'none',
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank(),
     panel.background = element_rect(fill = "transparent", colour = NA),
     plot.background = element_rect(fill = "transparent", colour = NA)
   )
@@ -378,10 +390,15 @@ gNSMPsEngagement <- activeMPData %>%
   ggplot(aes(y = answeredShare)) +
   geom_boxplot() +
   facet_grid(cols = vars(isNSText)) +
+  xlab('MP is a frequent no-show') +
+  ylab('Share of questions answered') +
+  scale_y_continuous(labels = percent) +
   ggtitle(label = element_blank(),
           subtitle = element_text('Level of voter engagement')) +
   theme(
     legend.position = 'none',
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank(),
     panel.background = element_rect(fill = "transparent", colour = NA),
     plot.background = element_rect(fill = "transparent", colour = NA)
   )
@@ -484,7 +501,7 @@ ggsave(
   filename = 'Frequency of no-show votes.jpg'
 )
 
-nsVotes %>%
+dictKeyStats['AvgNSSharePerPoll'] <- nsVotes %>%
   mutate(S = round(s, 2)) %>%
   group_by(S) %>%
   summarise(N = sum(n)) %>%
@@ -497,7 +514,7 @@ nsVotes %>%
 # no-shows
 
 nsVoteIDs <- nsVotes %>%
-  filter(s > 0.08) %>%
+  filter(s > dictKeyStats['AvgNSSharePerPoll']) %>%
   select('poll.id')
 
 load(file = paste0(folderRData, strDate, '-motions.RData'))
@@ -570,7 +587,7 @@ gPollsWeekday <- pollsByDay %>%
               -0.75) +
   ggtitle('Distribution of polls by weekday') +
   xlab('Weekday') +
-  ylab('# of polls, share of votes that are no-show') +
+  ylab('# of polls, share of no-show votes') +
   theme(
     legend.position = 'bottom',
     legend.title = element_blank(),
@@ -589,7 +606,7 @@ ggsave(
 )
 
 # FINDINGS The majority of polls is held on Thursdays and Fridays, i.e. at the
-# end of a working week.  However, Fridays are also the weekday with the highest
+# end of a working week.  However, Thursdays are the weekday with the highest
 # share of no-show votes - we hypothesise that this may in part be because
 # Friday may be seen as the start of the weekend by some MPs.
 
